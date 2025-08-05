@@ -1,0 +1,25 @@
+name: Daily Compliance Reminders
+
+on:
+  schedule:
+    # Run every day at 9:00 AM PST (17:00 UTC)
+    - cron: '0 17 * * *'
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  send-compliance-reminders:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Trigger Compliance Tasks
+      run: |
+        curl -X POST "${{ secrets.RAILWAY_APP_URL }}/cron/compliance" \
+          -H "Content-Type: application/json" \
+          -H "X-Cron-Secret: ${{ secrets.CRON_SECRET }}" \
+          -d '{}' \
+          --fail-with-body \
+          --show-error \
+          --silent
+      
+    - name: Log completion
+      run: echo "Daily compliance reminders triggered successfully"
