@@ -10,7 +10,7 @@ jobs:
   send-compliance-reminders:
     runs-on: ubuntu-latest
     
-steps:
+    steps:
       - name: Wake up Railway app
         run: |
           echo "Waking up Railway app..."
