@@ -10,16 +10,24 @@ jobs:
   send-compliance-reminders:
     runs-on: ubuntu-latest
     
-    steps:
-    - name: Trigger Compliance Tasks
-      run: |
-        curl -X POST "${{ secrets.RAILWAY_APP_URL }}/cron/compliance" \
-          -H "Content-Type: application/json" \
-          -H "X-Cron-Secret: ${{ secrets.CRON_SECRET }}" \
-          -d '{}' \
-          --fail-with-body \
-          --show-error \
-          --silent
-      
-    - name: Log completion
-      run: echo "Daily compliance reminders triggered successfully"
+steps:
+      - name: Wake up Railway app
+        run: |
+          echo "Waking up Railway app..."
+          curl -s "${{ secrets.RAILWAY_APP_URL }}" || echo "App may be sleeping, continuing..."
+
+      - name: Wait for app to start
+        run: sleep 30
+
+      - name: Trigger Compliance Tasks
+        run: |
+          curl -X POST "${{ secrets.RAILWAY_APP_URL }}/cron/compliance" \
+            -H "Content-Type: application/json" \
+            -H "X-Cron-Secret: ${{ secrets.CRON_SECRET }}" \
+            -d '{}' \
+            --fail-with-body \
+            --show-error \
+            --silent
+
+      - name: Log completion
+        run: echo "Daily compliance reminders triggered successfully"
